@@ -1,47 +1,41 @@
 const express = require('express');
-const path = require('path');
-const dotenv = require('dotenv');
+const route = require('./router/allRoutes');
+const errorMiddleware = require('./middleware/error');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const route = require('./router/allRoutes'); // Ensure that this route exists
-const errorMiddleware = require('./middleware/error'); // Ensure this middleware exists
-const DB = require('./config/database'); // Database connection logic
+const path = require('path');
+const dotenv = require('dotenv')
 
 dotenv.config({ path: path.resolve(__dirname, 'config/config.env') });
 
 const app = express();
 
-// Database Connection
-DB(); // Connect to your database (e.g., MongoDB)
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use(express.json()); // To parse JSON request bodies
-app.use(cookieParser()); // To parse cookies in requests
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serving uploaded files
+  app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+  }));
 
-// CORS setup (update the frontend URL to match your production setup)
-app.use(cors({
-  origin: 'http://localhost:5173', // Change to your React app's URL in production if needed
-  credentials: true, // Allows cookies to be sent across different domains
-}));
 
-// API Routes
+
+// Other routes
 app.use('/api', route);
 
-// Serving React app in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build'))); // Path to your built React app
+if(process.env.NODE_ENV ==='production'){
+  app.use(express.static(path.join(__dirname, '../frontend/build')))
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend/build/index.html'))
+})
 
-  // Send React's index.html for all non-API routes
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/build/index.html')); // Correct path to index.html
-  });
+
 }
 
-// Error handling middleware (ensure this is catching errors globally)
+
+// Error handling middleware
 app.use(errorMiddleware);
 
-// Start server
-const PORT = process.env.PORT || 8000;  // Use port from env or default to 8000
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server Successfully Running on Port ${PORT} in ${process.env.NODE_ENV} mode`);
-});
+module.exports = app;
