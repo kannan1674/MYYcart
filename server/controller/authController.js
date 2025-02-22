@@ -12,6 +12,7 @@ exports.registerUser = cathAsyncError(async (req, res, next) => {
         const { name, email, password } = req.body
 
         let avatar;
+      
         if(req.file){
             avatar = `/uploads/user/${req.file.originalname}`
         }
