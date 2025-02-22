@@ -7,7 +7,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import ProductDetails from './component/ProductDetails';
 import SearchProducts from './component/SearchProducts';
-import Login from './component/user/login.jsx';
+import Login from './component/user/Login.jsx';
 import Register from './component/user/Register';
 import store from './Store';
 import { useEffect, useState } from 'react';
