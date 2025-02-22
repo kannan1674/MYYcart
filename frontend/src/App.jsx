@@ -37,7 +37,7 @@ function App() {
   useEffect(() => {
     store.dispatch(loadUser);
     async function getStripeApiKey() {
-      const { data } = await axios.get('http://localhost:8000/api/stripe/apiKey');
+      const { data } = await axios.get('http://13.60.59.130:8000/api/stripe/apiKey');
       setStripeApiKey(data.stripeApikey);
     }
     getStripeApiKey();
