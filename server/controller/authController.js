@@ -74,8 +74,12 @@ exports.forgotPassword = cathAsyncError(async (req, res, next) => {
     // Save the user without validation
     await user.save({ validateBeforeSave: false });
 
+      let BASE_URL =proces.env.FRONTEND_URL
+            if(process.env.NODE_ENV ==='production'){
+            BASE_URL = `${req.protocol}://${req.get('host')}`
+        }
     // Reset URL
-    const resetUrl = `${process.env.FRONTEND_URL}/${resetToken}`;
+    const resetUrl = `${BASE_URL}/${resetToken}`;
 
     const message = `You requested a password reset. Please make a PUT request to the following URL:\n\n${resetUrl}`;
 
